@@ -1,0 +1,7 @@
+{
+  "name": "medhom",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
