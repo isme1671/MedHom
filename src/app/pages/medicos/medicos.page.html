@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start"><ion-back-button defaultHref="/tabs/mas"></ion-back-button></ion-buttons>
+    <ion-title>Médicos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="cargar($event)"><ion-refresher-content></ion-refresher-content></ion-refresher>
+  <ion-list>
+    @for (m of medicos; track m.id) {
+      <ion-item-sliding>
+        <ion-item>
+          <ion-icon slot="start" name="medkit-outline" color="primary"></ion-icon>
+          <ion-label><h2>Dr(a). {{ m.nombre }}</h2><p>{{ m.especialidad }} · {{ m.telefono }}</p></ion-label>
+        </ion-item>
+        <ion-item-options side="end"><ion-item-option color="danger" (click)="eliminar(m)">Eliminar</ion-item-option></ion-item-options>
+      </ion-item-sliding>
+    } @empty { <ion-item><ion-label>No hay médicos. Pulsa + para agregar.</ion-label></ion-item> }
+  </ion-list>
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button (click)="abrir()"><ion-icon name="add"></ion-icon></ion-fab-button>
+  </ion-fab>
+
+  <ion-modal [isOpen]="abierto" (didDismiss)="abierto = false">
+    <ng-template>
+      <ion-header><ion-toolbar><ion-title>Nuevo médico</ion-title>
+        <ion-buttons slot="end"><ion-button (click)="abierto = false">Cerrar</ion-button></ion-buttons></ion-toolbar></ion-header>
+      <ion-content class="ion-padding">
+        <ion-input class="campo" label="Nombre" labelPlacement="floating" fill="outline" [(ngModel)]="nuevo.nombre"></ion-input>
+        <ion-input class="campo" label="Especialidad" labelPlacement="floating" fill="outline" [(ngModel)]="nuevo.especialidad"></ion-input>
+        <ion-input class="campo" type="tel" label="Teléfono" labelPlacement="floating" fill="outline" [(ngModel)]="nuevo.telefono"></ion-input>
+        <ion-button expand="block" (click)="guardar()">Guardar médico</ion-button>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

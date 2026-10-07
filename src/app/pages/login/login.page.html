@@ -1,0 +1,18 @@
+<ion-content class="ion-padding">
+  <img src="assets/logo.png" alt="MedHom" class="logo">
+
+  <ion-segment [(ngModel)]="modo" class="campo">
+    <ion-segment-button value="login"><ion-label>Iniciar sesión</ion-label></ion-segment-button>
+    <ion-segment-button value="registro"><ion-label>Crear cuenta</ion-label></ion-segment-button>
+  </ion-segment>
+
+  @if (modo === 'registro') {
+    <ion-input class="campo" label="Nombre" labelPlacement="floating" fill="outline" [(ngModel)]="nombre"></ion-input>
+  }
+  <ion-input class="campo" type="email" label="Correo" labelPlacement="floating" fill="outline" [(ngModel)]="email"></ion-input>
+  <ion-input class="campo" type="password" label="Contraseña" labelPlacement="floating" fill="outline" [(ngModel)]="password"></ion-input>
+
+  @if (error) { <ion-text color="danger"><p>{{ error }}</p></ion-text> }
+
+  <ion-button expand="block" (click)="enviar()">{{ modo === 'login' ? 'Entrar' : 'Crear cuenta' }}</ion-button>
+</ion-content>

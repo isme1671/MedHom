@@ -1,0 +1,63 @@
+<ion-header>
+  <ion-toolbar>
+    <img slot="start" src="assets/logo.png" alt="MedHom" class="logo-mini">
+    <ion-title>Dashboard</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-refresher slot="fixed" (ionRefresh)="refrescar($event)"><ion-refresher-content></ion-refresher-content></ion-refresher>
+
+  <h2>Hola, {{ auth.usuario?.nombre }}</h2>
+
+  <div class="stats">
+    <div class="stat"><span>Pacientes</span><b>{{ stats.pacientes }}</b></div>
+    <div class="stat"><span>Médicos</span><b>{{ stats.medicos }}</b></div>
+    <div class="stat"><span>Citas pendientes</span><b>{{ stats.citasPendientes }}</b></div>
+    <div class="stat"><span>Citas de hoy</span><b>{{ stats.citasHoy }}</b></div>
+    <div class="stat"><span>Consultas</span><b>{{ stats.consultas }}</b></div>
+    <div class="stat"><span>Recetas</span><b>{{ stats.recetas }}</b></div>
+    <div class="stat"><span>Cobrado</span><b>RD$ {{ stats.cobrado | number:'1.0-0' }}</b></div>
+    <div class="stat"><span>Por cobrar</span><b>RD$ {{ stats.porCobrar | number:'1.0-0' }}</b></div>
+  </div>
+
+  <h3>Facturación</h3>
+  <div class="barra"><div class="barra-llena" [style.width.%]="pctCobrado"></div></div>
+  <small>{{ pctCobrado }}% cobrado</small>
+
+  <h3>Citas pendientes</h3>
+  <ion-list>
+    @for (c of pendientes; track c.id) {
+      <ion-item>
+        <ion-label>
+          <h3>{{ c.paciente }}</h3>
+          <p>Dr(a). {{ c.medico }} · {{ c.fecha | date:'dd/MM/yyyy HH:mm' }}</p>
+          <p>{{ c.motivo }}</p>
+        </ion-label>
+      </ion-item>
+    } @empty { <ion-item><ion-label>No hay citas pendientes</ion-label></ion-item> }
+  </ion-list>
+
+  <h3>Últimas consultas</h3>
+  <ion-list>
+    @for (c of ultimas; track c.id) {
+      <ion-item>
+        <ion-label>
+          <h3>{{ c.diagnostico }}</h3>
+          <p>{{ c.paciente }} · {{ c.fecha | date:'dd/MM/yyyy' }}</p>
+        </ion-label>
+      </ion-item>
+    } @empty { <ion-item><ion-label>Aún no hay consultas</ion-label></ion-item> }
+  </ion-list>
+
+  <h3>Noticias de salud</h3>
+  @if (cargando) { <div class="ion-text-center"><ion-spinner></ion-spinner></div> }
+  @if (error) { <ion-text color="danger"><p>{{ error }}</p></ion-text> }
+  @for (n of noticias.slice(0, 3); track n.id) {
+    <ion-card>
+      <ion-card-header><ion-card-title>{{ n.titulo }}</ion-card-title></ion-card-header>
+      <ion-card-content>{{ n.resumen }}</ion-card-content>
+    </ion-card>
+  }
+  <ion-button expand="block" fill="outline" (click)="enviar()">Enviar sugerencia (POST)</ion-button>
+</ion-content>

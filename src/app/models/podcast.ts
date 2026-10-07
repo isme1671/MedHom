@@ -1,0 +1,1 @@
+export interface Podcast { id: number; titulo: string; url: string; }

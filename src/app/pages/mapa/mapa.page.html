@@ -1,0 +1,13 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Clínicas</ion-title>
+    <ion-badge slot="end" [color]="online ? 'success' : 'danger'">{{ online ? 'Online' : 'Offline' }}</ion-badge>
+  </ion-toolbar>
+</ion-header>
+<ion-content [scrollY]="false">
+  @if (aviso) { <p class="ion-padding" style="margin:0">{{ aviso }}</p> }
+  <div id="mapa" style="height:100%;width:100%"></div>
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button (click)="miUbicacion()"><ion-icon name="locate"></ion-icon></ion-fab-button>
+  </ion-fab>
+</ion-content>

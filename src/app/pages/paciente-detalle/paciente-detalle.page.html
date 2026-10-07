@@ -1,0 +1,63 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start"><ion-back-button defaultHref="/tabs/pacientes"></ion-back-button></ion-buttons>
+    <ion-title>Perfil del paciente</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (p) {
+    <ion-card>
+      <ion-card-header>
+        @if (p.foto) { <img [src]="p.foto" alt="Foto" style="width:90px;height:90px;border-radius:50%;object-fit:cover"> }
+        <ion-card-title>{{ p.nombre }}</ion-card-title>
+        <ion-card-subtitle>{{ p.cedula }} · {{ edad }}</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-button size="small" fill="outline" (click)="foto()"><ion-icon slot="start" name="camera-outline"></ion-icon>Tomar foto</ion-button>
+        <ion-input class="campo" type="tel" label="Teléfono" labelPlacement="floating" fill="outline" [(ngModel)]="p.telefono"></ion-input>
+        <ion-input class="campo" label="Tipo de sangre" labelPlacement="floating" fill="outline" [(ngModel)]="p.tipoSangre"></ion-input>
+        <ion-input class="campo" label="Alergias" labelPlacement="floating" fill="outline" [(ngModel)]="p.alergias"></ion-input>
+        <ion-textarea class="campo" label="Antecedentes" labelPlacement="floating" fill="outline" [(ngModel)]="p.antecedentes"></ion-textarea>
+        <ion-button expand="block" (click)="guardar()">Guardar cambios</ion-button>
+        @if (mensaje) { <ion-text color="success"><p>{{ mensaje }}</p></ion-text> }
+      </ion-card-content>
+    </ion-card>
+
+    <h3>Historia clínica</h3>
+    <ion-segment [(ngModel)]="vista">
+      <ion-segment-button value="consultas"><ion-label>Consultas</ion-label></ion-segment-button>
+      <ion-segment-button value="recetas"><ion-label>Recetas</ion-label></ion-segment-button>
+      <ion-segment-button value="facturas"><ion-label>Facturas</ion-label></ion-segment-button>
+    </ion-segment>
+
+    <ion-list>
+      @if (vista === 'consultas') {
+        @for (c of consultas; track c.id) {
+          <ion-item><ion-label>
+            <h3>{{ c.diagnostico }}</h3>
+            <p>{{ c.fecha | date:'dd/MM/yyyy' }} · Dr(a). {{ nombreMedico(c.medicoId) }}</p>
+            <p>{{ c.notas }}</p>
+          </ion-label></ion-item>
+        } @empty { <ion-item><ion-label>Sin consultas registradas</ion-label></ion-item> }
+      }
+      @if (vista === 'recetas') {
+        @for (r of recetas; track r.id) {
+          <ion-item><ion-label>
+            <h3>{{ r.fecha | date:'dd/MM/yyyy' }} · Dr(a). {{ nombreMedico(r.medicoId) }}</h3>
+            @for (m of r.medicamentos; track $index) { <p>{{ m.nombre }}: {{ m.dosis }}, {{ m.frecuencia }}</p> }
+          </ion-label></ion-item>
+        } @empty { <ion-item><ion-label>Sin recetas</ion-label></ion-item> }
+      }
+      @if (vista === 'facturas') {
+        @for (f of facturas; track f.id) {
+          <ion-item>
+            <ion-label><h3>{{ f.concepto }}</h3><p>{{ f.fecha | date:'dd/MM/yyyy' }}</p></ion-label>
+            <ion-note slot="end">RD$ {{ f.monto | number:'1.2-2' }}</ion-note>
+            <ion-badge slot="end" [color]="f.pagada ? 'success' : 'primary'">{{ f.pagada ? 'Pagada' : 'Pendiente' }}</ion-badge>
+          </ion-item>
+        } @empty { <ion-item><ion-label>Sin facturas</ion-label></ion-item> }
+      }
+    </ion-list>
+  }
+</ion-content>

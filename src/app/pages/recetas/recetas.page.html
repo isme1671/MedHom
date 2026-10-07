@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start"><ion-back-button defaultHref="/tabs/mas"></ion-back-button></ion-buttons>
+    <ion-title>Recetas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="cargar($event)"><ion-refresher-content></ion-refresher-content></ion-refresher>
+
+  @for (r of recetas; track r.id) {
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>{{ nombrePaciente(r.pacienteId) }}</ion-card-title>
+        <ion-card-subtitle>Dr(a). {{ nombreMedico(r.medicoId) }} · {{ r.fecha | date:'dd/MM/yyyy' }}</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        @for (m of r.medicamentos; track $index) { <p>💊 <b>{{ m.nombre }}</b>: {{ m.dosis }}, {{ m.frecuencia }}</p> }
+        <ion-button size="small" color="danger" fill="clear" (click)="eliminar(r)">Eliminar</ion-button>
+      </ion-card-content>
+    </ion-card>
+  } @empty { <ion-item><ion-label>No hay recetas. Pulsa + para crear.</ion-label></ion-item> }
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button (click)="abrir()"><ion-icon name="add"></ion-icon></ion-fab-button>
+  </ion-fab>
+
+  <ion-modal [isOpen]="abierto" (didDismiss)="abierto = false">
+    <ng-template>
+      <ion-header><ion-toolbar><ion-title>Nueva receta</ion-title>
+        <ion-buttons slot="end"><ion-button (click)="abierto = false">Cerrar</ion-button></ion-buttons></ion-toolbar></ion-header>
+      <ion-content class="ion-padding">
+        <ion-select class="campo" label="Paciente" labelPlacement="floating" fill="outline" [(ngModel)]="pacienteId">
+          @for (p of pacientes; track p.id) { <ion-select-option [value]="p.id">{{ p.nombre }}</ion-select-option> }
+        </ion-select>
+        <ion-select class="campo" label="Médico" labelPlacement="floating" fill="outline" [(ngModel)]="medicoId">
+          @for (m of medicos; track m.id) { <ion-select-option [value]="m.id">{{ m.nombre }}</ion-select-option> }
+        </ion-select>
+
+        <h4>Medicamentos</h4>
+        @for (m of meds; track $index) {
+          <ion-input class="campo" label="Medicamento" labelPlacement="floating" fill="outline" [(ngModel)]="m.nombre"></ion-input>
+          <ion-input class="campo" label="Dosis (ej. 500 mg)" labelPlacement="floating" fill="outline" [(ngModel)]="m.dosis"></ion-input>
+          <ion-input class="campo" label="Frecuencia (ej. cada 8 horas)" labelPlacement="floating" fill="outline" [(ngModel)]="m.frecuencia"></ion-input>
+          @if (meds.length > 1) { <ion-button size="small" color="danger" fill="clear" (click)="quitarMed($index)">Quitar</ion-button> }
+        }
+        <ion-button fill="outline" (click)="agregarMed()">+ Otro medicamento</ion-button>
+        <ion-button expand="block" (click)="guardar()">Guardar receta</ion-button>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start"><ion-back-button defaultHref="/tabs/mas"></ion-back-button></ion-buttons>
+    <ion-title>Consultas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="cargar($event)"><ion-refresher-content></ion-refresher-content></ion-refresher>
+  <ion-list>
+    @for (c of consultas; track c.id) {
+      <ion-item-sliding>
+        <ion-item>
+          <ion-label>
+            <h2>{{ c.diagnostico }}</h2>
+            <p>{{ nombrePaciente(c.pacienteId) }} · Dr(a). {{ nombreMedico(c.medicoId) }}</p>
+            <p>{{ c.fecha | date:'dd/MM/yyyy HH:mm' }}</p>
+            <p>{{ c.notas }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-item-options side="end"><ion-item-option color="danger" (click)="eliminar(c)">Eliminar</ion-item-option></ion-item-options>
+      </ion-item-sliding>
+    } @empty { <ion-item><ion-label>No hay consultas. Pulsa + para registrar.</ion-label></ion-item> }
+  </ion-list>
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button (click)="abrir()"><ion-icon name="add"></ion-icon></ion-fab-button>
+  </ion-fab>
+
+  <ion-modal [isOpen]="abierto" (didDismiss)="abierto = false">
+    <ng-template>
+      <ion-header><ion-toolbar><ion-title>Nueva consulta</ion-title>
+        <ion-buttons slot="end"><ion-button (click)="abierto = false">Cerrar</ion-button></ion-buttons></ion-toolbar></ion-header>
+      <ion-content class="ion-padding">
+        <ion-select class="campo" label="Paciente" labelPlacement="floating" fill="outline" [(ngModel)]="nueva.pacienteId">
+          @for (p of pacientes; track p.id) { <ion-select-option [value]="p.id">{{ p.nombre }}</ion-select-option> }
+        </ion-select>
+        <ion-select class="campo" label="Médico" labelPlacement="floating" fill="outline" [(ngModel)]="nueva.medicoId">
+          @for (m of medicos; track m.id) { <ion-select-option [value]="m.id">{{ m.nombre }}</ion-select-option> }
+        </ion-select>
+        <ion-input class="campo" label="Diagnóstico" labelPlacement="floating" fill="outline" [(ngModel)]="nueva.diagnostico"></ion-input>
+        <ion-textarea class="campo" label="Notas" labelPlacement="floating" fill="outline" [(ngModel)]="nueva.notas"></ion-textarea>
+        <ion-button expand="block" (click)="guardar()">Guardar consulta</ion-button>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

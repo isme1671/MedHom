@@ -1,18 +1,9 @@
-import { Component, EnvironmentInjector, inject } from '@angular/core';
-import { IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel } from '@ionic/angular';
-import { addIcons } from 'ionicons';
-import { triangle, ellipse, square } from 'ionicons/icons';
+import { Component } from '@angular/core';
+import { IONIC } from '../shared/ionic';
 
 @Component({
   selector: 'app-tabs',
   templateUrl: 'tabs.page.html',
-  styleUrls: ['tabs.page.scss'],
-  imports: [IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel],
+  imports: [IONIC],
 })
-export class TabsPage {
-  public environmentInjector = inject(EnvironmentInjector);
-
-  constructor() {
-    addIcons({ triangle, ellipse, square });
-  }
-}
+export class TabsPage {}

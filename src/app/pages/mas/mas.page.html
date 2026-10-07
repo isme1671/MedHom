@@ -1,0 +1,11 @@
+<ion-header><ion-toolbar><ion-title>Más opciones</ion-title></ion-toolbar></ion-header>
+<ion-content>
+  <ion-list>
+    @for (o of opciones; track o.ruta) {
+      <ion-item button detail (click)="ir(o.ruta)">
+        <ion-icon slot="start" [name]="o.icono" color="primary"></ion-icon>
+        <ion-label>{{ o.titulo }}</ion-label>
+      </ion-item>
+    }
+  </ion-list>
+</ion-content>

@@ -1,0 +1,81 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Citas</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="menuEscaner()">
+        <ion-icon slot="icon-only" name="qr-code-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="cargar($event)"><ion-refresher-content></ion-refresher-content></ion-refresher>
+
+  <ion-list>
+    @for (c of citas; track c.id) {
+      <ion-item-sliding>
+        <ion-item-options side="start">
+          <ion-item-option color="success" (click)="cambiarEstado(c, 'completada')">Completar</ion-item-option>
+        </ion-item-options>
+        <ion-item>
+          <ion-label>
+            <h2>{{ nombrePaciente(c.pacienteId) }}</h2>
+            <p>Dr(a). {{ nombreMedico(c.medicoId) }} · {{ c.fecha | date:'dd/MM/yyyy HH:mm' }}</p>
+            <p>{{ c.motivo }}</p>
+          </ion-label>
+          <ion-badge slot="end" [color]="c.estado === 'completada' ? 'success' : c.estado === 'cancelada' ? 'medium' : 'primary'">{{ c.estado }}</ion-badge>
+          <ion-button slot="end" fill="clear" (click)="verQR(c)">
+            <ion-icon slot="icon-only" name="qr-code-outline"></ion-icon>
+          </ion-button>
+        </ion-item>
+        <ion-item-options side="end">
+          <ion-item-option color="medium" (click)="cambiarEstado(c, 'cancelada')">Cancelar</ion-item-option>
+          <ion-item-option color="danger" (click)="eliminar(c)">Eliminar</ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    } @empty { <ion-item><ion-label>No hay citas. Pulsa + para agendar.</ion-label></ion-item> }
+  </ion-list>
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button (click)="abrir()"><ion-icon name="add"></ion-icon></ion-fab-button>
+  </ion-fab>
+
+  <!-- Formulario de nueva cita -->
+  <ion-modal [isOpen]="abierto" (didDismiss)="abierto = false">
+    <ng-template>
+      <ion-header><ion-toolbar><ion-title>Nueva cita</ion-title>
+        <ion-buttons slot="end"><ion-button (click)="abierto = false">Cerrar</ion-button></ion-buttons></ion-toolbar></ion-header>
+      <ion-content class="ion-padding">
+        @if (!pacientes.length || !medicos.length) {
+          <ion-text color="danger"><p>Primero registra al menos un paciente y un médico.</p></ion-text>
+        }
+        <ion-select class="campo" label="Paciente" labelPlacement="floating" fill="outline" [(ngModel)]="nueva.pacienteId">
+          @for (p of pacientes; track p.id) { <ion-select-option [value]="p.id">{{ p.nombre }}</ion-select-option> }
+        </ion-select>
+        <ion-select class="campo" label="Médico" labelPlacement="floating" fill="outline" [(ngModel)]="nueva.medicoId">
+          @for (m of medicos; track m.id) { <ion-select-option [value]="m.id">{{ m.nombre }} ({{ m.especialidad }})</ion-select-option> }
+        </ion-select>
+        <ion-input class="campo" type="datetime-local" label="Fecha y hora" labelPlacement="stacked" fill="outline" [(ngModel)]="nueva.fecha"></ion-input>
+        <ion-input class="campo" label="Motivo" labelPlacement="floating" fill="outline" [(ngModel)]="nueva.motivo"></ion-input>
+        <ion-button expand="block" (click)="guardar()">Agendar cita</ion-button>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <!-- QR de la cita -->
+  <ion-modal [isOpen]="qrAbierto" (didDismiss)="qrAbierto = false">
+    <ng-template>
+      <ion-header><ion-toolbar><ion-title>QR de la cita</ion-title>
+        <ion-buttons slot="end"><ion-button (click)="qrAbierto = false">Cerrar</ion-button></ion-buttons></ion-toolbar></ion-header>
+      <ion-content class="ion-padding ion-text-center">
+        @if (qrCita) {
+          <h3>{{ nombrePaciente(qrCita.pacienteId) }}</h3>
+          <p>Dr(a). {{ nombreMedico(qrCita.medicoId) }} · {{ qrCita.fecha | date:'dd/MM/yyyy HH:mm' }}</p>
+        }
+        <img [src]="qrImg" alt="QR de la cita" style="width:260px;height:260px;background:#fff;padding:8px;border-radius:12px">
+        <p>Escanéalo con el botón QR de la pantalla Citas para marcarla como completada.</p>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

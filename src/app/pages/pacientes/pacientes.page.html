@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-toolbar><ion-title>Pacientes</ion-title></ion-toolbar>
+  <ion-toolbar><ion-searchbar [(ngModel)]="filtro" placeholder="Buscar por nombre o cédula"></ion-searchbar></ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="cargar($event)"><ion-refresher-content></ion-refresher-content></ion-refresher>
+
+  <ion-list>
+    @for (p of filtrados; track p.id) {
+      <ion-item-sliding>
+        <ion-item button detail (click)="ver(p)">
+          <ion-label><h2>{{ p.nombre }}</h2><p>{{ p.cedula }} · Sangre {{ p.tipoSangre || '—' }}</p></ion-label>
+        </ion-item>
+        <ion-item-options side="end">
+          <ion-item-option color="danger" (click)="eliminar(p)">Eliminar</ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    } @empty {
+      <ion-item><ion-label>No hay pacientes. Pulsa + para registrar uno.</ion-label></ion-item>
+    }
+  </ion-list>
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button (click)="abrir()"><ion-icon name="add"></ion-icon></ion-fab-button>
+  </ion-fab>
+
+  <ion-modal [isOpen]="abierto" (didDismiss)="abierto = false">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Registrar paciente</ion-title>
+          <ion-buttons slot="end"><ion-button (click)="abierto = false">Cerrar</ion-button></ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <ion-input class="campo" label="Nombre completo" labelPlacement="floating" fill="outline" [(ngModel)]="nuevo.nombre"></ion-input>
+        <ion-input class="campo" label="Cédula" labelPlacement="floating" fill="outline" [(ngModel)]="nuevo.cedula"></ion-input>
+        <ion-input class="campo" type="date" label="Fecha de nacimiento" labelPlacement="stacked" fill="outline" [(ngModel)]="nuevo.fechaNac"></ion-input>
+        <ion-input class="campo" type="tel" label="Teléfono" labelPlacement="floating" fill="outline" [(ngModel)]="nuevo.telefono"></ion-input>
+        <ion-input class="campo" label="Tipo de sangre" labelPlacement="floating" fill="outline" [(ngModel)]="nuevo.tipoSangre"></ion-input>
+        <ion-input class="campo" label="Alergias" labelPlacement="floating" fill="outline" [(ngModel)]="nuevo.alergias"></ion-input>
+        <ion-textarea class="campo" label="Antecedentes" labelPlacement="floating" fill="outline" [(ngModel)]="nuevo.antecedentes"></ion-textarea>
+        <ion-button expand="block" (click)="guardar()">Guardar paciente</ion-button>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>

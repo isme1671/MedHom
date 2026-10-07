@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start"><ion-back-button defaultHref="/tabs/mas"></ion-back-button></ion-buttons>
+    <ion-title>Salud</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+  <h3>Podcasts de salud</h3>
+  <ion-list>
+    @for (p of podcasts; track p.id) {
+      <ion-item button (click)="reproducir(p)"><ion-label>{{ p.titulo }}</ion-label></ion-item>
+    }
+  </ion-list>
+
+  @if (actual) {
+    <ion-card><ion-card-content>
+      <b>{{ actual.titulo }}</b>
+      <ion-range [value]="progreso" (ionChange)="buscar($event)"></ion-range>
+      <ion-button (click)="reproducir(actual)">Play</ion-button>
+      <ion-button color="warning" (click)="pausar()">Pausa</ion-button>
+      <ion-button color="danger" (click)="detener()">Stop</ion-button>
+    </ion-card-content></ion-card>
+  }
+
+  <h3>Cámara</h3>
+  <ion-button (click)="tomarFoto()">Foto de receta</ion-button>
+  <ion-button color="secondary" (click)="escanearQR()">Escanear QR de cita</ion-button>
+  @if (foto) { <img [src]="foto" style="width:100%"> }
+  @if (qrTexto) { <p>QR: <b>{{ qrTexto }}</b></p> }
+</ion-content>

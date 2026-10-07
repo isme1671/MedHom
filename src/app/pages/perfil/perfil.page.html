@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start"><ion-back-button defaultHref="/tabs/mas"></ion-back-button></ion-buttons>
+    <ion-title>Mi perfil</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-card>
+    <ion-card-header><ion-card-title>Datos médicos</ion-card-title></ion-card-header>
+    <ion-card-content>
+      <ion-input class="campo" label="Nombre" labelPlacement="floating" fill="outline" [(ngModel)]="perfil.nombre"></ion-input>
+      <ion-input class="campo" label="Tipo de sangre" labelPlacement="floating" fill="outline" [(ngModel)]="perfil.tipoSangre"></ion-input>
+      <ion-input class="campo" label="Alergias" labelPlacement="floating" fill="outline" [(ngModel)]="perfil.alergias"></ion-input>
+      <ion-button expand="block" (click)="guardar()">Guardar</ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-item><ion-toggle [(ngModel)]="oscuro" (ionChange)="cambiarTema()">Modo oscuro</ion-toggle></ion-item>
+
+  <h3>Dispositivos Bluetooth cercanos</h3>
+  <ion-button (click)="escanearBLE()" [disabled]="buscando">{{ buscando ? 'Buscando (8 s)...' : 'Escanear BLE' }}</ion-button>
+  <ion-list>
+    @for (d of dispositivos; track d.id) {
+      <ion-item><ion-label>{{ d.nombre }}<p>{{ d.id }}@if (d.rssi) { · señal {{ d.rssi }} dBm }</p></ion-label></ion-item>
+    }
+  </ion-list>
+  <p>{{ mensaje }}</p>
+
+  <h3>Cuenta</h3>
+  <p>Sesión iniciada como <b>{{ auth.usuario?.email }}</b></p>
+  <ion-button expand="block" color="secondary" (click)="salir()">
+    <ion-icon slot="start" name="log-out-outline"></ion-icon>Cerrar sesión
+  </ion-button>
+</ion-content>
