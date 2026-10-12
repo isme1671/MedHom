@@ -8,7 +8,7 @@ export class ApiService {
   private url = 'https://jsonplaceholder.typicode.com/posts'; // API de prueba
   constructor(private http: HttpClient) {}
 
-  // GET: lista de "noticias de salud"
+  // lista de "noticias de salud"
   getNoticias(): Observable<Noticia[]> {
     return this.http.get<any[]>(this.url).pipe(
       map(posts => posts.slice(0, 15).map(p => ({

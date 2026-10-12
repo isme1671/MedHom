@@ -32,7 +32,7 @@ export class InicioPage implements OnDestroy {
     public auth: AuthService, private crud: CrudService,
     private api: ApiService, private toast: ToastController,
   ) {
-    // Cada vez que se guarda, edita o elimina algo en cualquier pantalla, se recalcula el dashboard
+    
     this.sub = this.crud.cambios$.subscribe(() => this.cargarStats());
   }
 
@@ -50,7 +50,7 @@ export class InicioPage implements OnDestroy {
       this.crud.list<Receta>('recetas'), this.crud.list<Factura>('facturas'),
     ]);
 
-    // Fecha de hoy en formato local AAAA-MM-DD (igual que el campo de fecha de las citas)
+    // corrección de la fecha
     const d = new Date();
     const hoy = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 

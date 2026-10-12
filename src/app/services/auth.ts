@@ -10,7 +10,7 @@ export class AuthService {
 
   constructor(private store: StorageService, private crud: CrudService) {}
 
-  // Recupera la sesión guardada (solo la primera vez)
+
   async cargar() {
     if (this.cargado) return;
     this.usuario = await this.store.get<Usuario>('sesion');
@@ -18,14 +18,14 @@ export class AuthService {
   }
   get logueado() { return !!this.usuario; }
 
-  // La contraseña nunca se guarda en texto plano: se guarda su hash SHA-256
+  
   private async hash(texto: string): Promise<string> {
     if (!crypto.subtle) return btoa(texto); // respaldo si el navegador no es "seguro" (http)
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(texto));
     return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
-  // Devuelve un mensaje de error, o null si todo salió bien
+  
   async registrar(nombre: string, email: string, password: string): Promise<string | null> {
     const usuarios = await this.crud.list<Usuario>('usuarios');
     if (usuarios.some(u => u.email === email)) return 'Ese correo ya está registrado';

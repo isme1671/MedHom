@@ -4,7 +4,7 @@ import { StorageService } from './storage';
 
 @Injectable({ providedIn: 'root' })
 export class CrudService {
-  // Cada vez que se guarda algo, se emite el nombre de la colección (el dashboard lo escucha)
+  
   private cambios = new Subject<string>();
   cambios$ = this.cambios.asObservable();
 
@@ -15,7 +15,7 @@ export class CrudService {
     this.cambios.next(col);
   }
 
-  // READ: toda la colección
+  
   async list<T>(col: string): Promise<T[]> { return (await this.store.get<T[]>(col)) ?? []; }
 
   // READ: un elemento por id
@@ -23,7 +23,7 @@ export class CrudService {
     return (await this.list<T>(col)).find(x => x.id === id);
   }
 
-  // CREATE
+
   async add<T extends { id: number }>(col: string, item: Omit<T, 'id'>): Promise<T> {
     const lista = await this.list<T>(col);
     const nuevo = { ...item, id: Date.now() } as unknown as T;
